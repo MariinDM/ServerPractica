@@ -9,7 +9,7 @@
 | routes for different URLs and bind Controller actions to them.
 |
 | A complete guide on routing is available here.
-| http://adonisjs.com/docs/4.1/routing
+| http://adonisjs.com/docs/4.1/routing'
 |
 */
 
@@ -18,5 +18,5 @@ const Route = use('Route')
 
 Route.group(function(){
     Route.resource('category','CategoryController')
-    Route.get('category/index','CategoryController.index2')
+    Route.get('/index2','CategoryController.index2')
 }).prefix('api/v1')

@@ -16,10 +16,10 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+use('./routes/authRoutes.js')
 use('./routes/viewRoutes.js')
 use('./routes/categoryRoutes.js')
 use('./routes/rolRoutes.js')
-
 
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }

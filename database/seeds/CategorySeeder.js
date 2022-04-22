@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| RolSeeder
+| CategorySeeder
 |--------------------------------------------------------------------------
 |
 | Make use of the Factory instance to seed database with dummy data or
@@ -12,27 +12,29 @@
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
-const Rol = use('App/Models/Rol')
+const Category = use('App/Models/Category')
 
-class RolSeeder {
+class CategorySeeder {
   async run () {
-    await Rol.create({
-      name:'basic',
+    await Category.create({
+      name:'Categoria',
+      icon:'category',
+      level:'1',
       status:true
     })
-    await Rol.create({
-      name:'support',
+    await Category.create({
+      name:'Usuarios',
+      icon:'person',
+      level:'2',
       status:true
     })
-    await Rol.create({
-      name:'admin',
-      status:true
-    })
-    await Rol.create({
-      name:'debugger',
+    await Category.create({
+      name:'Reportes',
+      icon:'note',
+      level:'3',
       status:true
     })
   }
 }
 
-module.exports = RolSeeder
+module.exports = CategorySeeder

@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Rol extends Model {
     static get visible(){
-        return ['name','status']
+        return ['id', 'name','status']
     }
 }
 

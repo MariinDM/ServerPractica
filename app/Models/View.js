@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class View extends Model {
     static get visible(){
-        return ['name','icon','level','route','status','category_id']
+        return ['id', 'name','icon','level','route','status','category_id']
     }
 }
 

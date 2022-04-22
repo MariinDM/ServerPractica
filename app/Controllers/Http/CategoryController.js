@@ -20,24 +20,24 @@ class CategoryContcategoryler {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index({ request, response, view }) {
     const dato = await Category.query()
-    .with('views',(builder)=>{
-      builder.where('status', true)
-    })
-    .fetch()
+      .whereHas('views', (builder) => {
+        builder.where('status', true)
+      })
+      .with('views')
+      .fetch()
 
     return response.ok({
-      status:true,
-      data:dato
+      status: true,
+      data: dato
     })
   }
-  async index2 ({ request, response }) {
-    const category = await Database.from('categories').where({ 'status': 1 })
-
+  async index2({ request, response }) {
+    const category = await Category.all()
     return response.ok({
-      status:true,
-      data:category
+      status: true,
+      data: category
     })
   }
 
@@ -49,13 +49,13 @@ class CategoryContcategoryler {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request, response }) {
     const category = await request.only(Category.visible)
 
     await Category.create(category)
     return response.created({
-        status:true,
-        data:category
+      status: true,
+      data: category
     })
   }
 
@@ -68,19 +68,19 @@ class CategoryContcategoryler {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  // async show ({ params, request, response }) {
-  //   const category = await Category.findByOrFail({id:params.id})
-  //   if(category){
-  //     return response.ok({
-  //       status:true,
-  //       data:category
-  //     })
-  //   }
-  //   return response.badRequest({
-  //     status:false,
-  //     message:'category not found'
-  //   })
-  // }
+  async show({ params, request, response }) {
+    const category = await Category.findByOrFail({ id: params.id })
+    if (category) {
+      return response.ok({
+        status: true,
+        data: category
+      })
+    }
+    return response.badRequest({
+      status: false,
+      message: 'category not found'
+    })
+  }
 
   /**
    * Update category details.
@@ -90,23 +90,23 @@ class CategoryContcategoryler {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
-    const category = await Category.findByOrFail({id:params.id})
+  async update({ params, request, response }) {
+    const category = await Category.findByOrFail({ id: params.id })
 
-    if(category){
-    
+    if (category) {
+
       category.merge(request.only(Category.visible))
 
       await category.save()
 
       return response.ok({
-        status:true,
-        data:category
+        status: true,
+        data: category
       })
     }
     return response.badRequest({
-      status:false,
-      message:'Vista No Encontrada'
+      status: false,
+      message: 'Vista No Encontrada'
     })
   }
 
@@ -118,36 +118,24 @@ class CategoryContcategoryler {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-    const category = await Category.findByOrFail({id:params.id})
+  async destroy({ params, request, response }) {
+    
+    const category = await Category.findByOrFail({ id: params.id })
 
-    if(category){
-      if(category.status){
-      
-        category.merge({status:false})
-  
-        await category.save()
-        
-        return response.ok({
-          status:true,
-          message:category
-        })
-      }
-      else{
-        category.merge({status:true})
-  
-        await category.save()
-        
-        return response.ok({
-          status:true,
-          message:category
-        })
-      }
+    if (category) {
+
+      category.status = !category.status
+
+      await category.save()
+
+      return response.ok({
+        status: true,
+        message: category
+      })
     }
-
     return response.badRequest({
       status:false,
-      message:'Error'
+      message: category
     })
   }
 }

@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Category extends Model {
     static get visible(){
-        return ['name','icon','level','options','status']
+        return ['id','name','icon','level','status']
     }
     
     views () {
