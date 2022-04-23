@@ -16,17 +16,14 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
-})
-
 Route.group(function(){
     Route.resource('views','ViewController')
     .apiOnly()
     .validator(new Map([
       [['views.store'], ['Views/StoreView']],
-      [['views.update'], ['Views/UpdateView']],
     ]))
-}).prefix('api/v1')
+})
+.prefix('api/v1')
+.middleware(['auth'])
 
 

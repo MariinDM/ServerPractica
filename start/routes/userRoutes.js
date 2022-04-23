@@ -9,7 +9,7 @@
 | routes for different URLs and bind Controller actions to them.
 |
 | A complete guide on routing is available here.
-| http://adonisjs.com/docs/4.1/routing'
+| http://adonisjs.com/docs/4.1/routing
 |
 */
 
@@ -17,12 +17,7 @@
 const Route = use('Route')
 
 Route.group(function(){
-    Route.resource('category','CategoryController')
-    .apiOnly()
-    .validator(new Map([
-      [['category.store'], ['Categories/StoreCategory']],
-    ]))
-    Route.get('/get/views','CategoryController.getViews')
+    Route.resource('usuarios','UserController')
 })
 .prefix('api/v1')
 .middleware(['auth'])

@@ -20,9 +20,10 @@ use('./routes/authRoutes.js')
 use('./routes/viewRoutes.js')
 use('./routes/categoryRoutes.js')
 use('./routes/rolRoutes.js')
+use('./routes/userRoutes.js')
 
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
-})
+}).middleware(['auth'])
 
 

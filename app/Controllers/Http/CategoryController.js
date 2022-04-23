@@ -21,25 +21,19 @@ class CategoryContcategoryler {
    * @param {View} ctx.view
    */
   async index({ request, response, view }) {
-    const dato = await Category.query()
-      .whereHas('views', (builder) => {
-        builder.where('status', true)
-      })
-      .with('views')
-      .fetch()
-
-    return response.ok({
-      status: true,
-      data: dato
-    })
-  }
-  async index2({ request, response }) {
     const category = await Category.all()
     return response.ok({
       status: true,
       data: category
     })
   }
+  // async index2({ request, response }) {
+  //   const category = await Category.all()
+  //   return response.ok({
+  //     status: true,
+  //     data: category
+  //   })
+  // }
 
   /**
    * Create/save a new category.
@@ -119,7 +113,7 @@ class CategoryContcategoryler {
    * @param {Response} ctx.response
    */
   async destroy({ params, request, response }) {
-    
+
     const category = await Category.findByOrFail({ id: params.id })
 
     if (category) {
@@ -134,10 +128,34 @@ class CategoryContcategoryler {
       })
     }
     return response.badRequest({
-      status:false,
+      status: false,
       message: category
     })
   }
+
+  // CONSULTAS EXTRAS
+  async getViews({ response, auth }) {
+
+    const {role_id}= auth.user
+    console.log(role_id)
+
+    const categories = await Category
+      .query()
+      .whereHas('views', (builder) => {
+        builder.where('status', true)
+        builder.whereHas('rol', (builder) => {
+          builder.where('rol_id', role_id)
+        })
+      })
+      .with('views.rol') //.rol
+      .fetch()
+
+    return response.ok({
+      status: true,
+      data: categories
+    })
+  }
+
 }
 
 module.exports = CategoryContcategoryler

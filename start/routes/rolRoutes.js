@@ -18,4 +18,6 @@ const Route = use('Route')
 
 Route.group(function(){
     Route.resource('rol','RolController')
-}).prefix('api/v1')
+})
+.prefix('api/v1')
+.middleware(['auth'])

@@ -7,20 +7,29 @@ const Model = use('Model')
 const Hash = use('Hash')
 
 class User extends Model {
-  static get visible(){
-    return ['username','email','password','role_id','status']
+
+  static get visible() {
+    return [ 'id','username', 'email', 'password', 'role_id', 'status']
   }
 
+  static get table() {
+    return 'users';
+  };
 
-  rol(){
-    return this.hasOne('App/Models/Rol')
+
+  static get primaryKey() {
+    return 'id';
+  };
+
+  rol() {
+    return this.belongsTo('App/Models/Role', 'role_id', 'id');
   }
-  tokens () {
+  tokens() {
     return this.hasMany('App/Models/Token')
   }
 
-  
-  static boot () {
+
+  static boot() {
     super.boot()
 
     /**

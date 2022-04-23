@@ -4,68 +4,108 @@ const { validate } = use('Validator')
 const Database = use('Database')
 
 class AuthController {
-    async login ({request, response, auth}){
-        
-        const {email, password} = request.only(User.visible)
 
-        const emaildb = Database.table('users').where({email:email})
-        if(emaildb){
-            const token = await auth.withRefreshToken().attempt(email,password,{
-                expiredIn:'8hours'
-            })
-    
-            return response.ok({token})
+    async login({ request, response, auth }) {
+
+        const { email, password } = request.only(User.visible)
+
+        const emaildb = Database.table('users').where({ email: email })
+        if (emaildb) {
+            const token = await auth.withRefreshToken().attempt(email, password, {}, { expiresIn: '3600000' })
+
+            return response.ok({ token })
         }
 
         return response.badRequest({
-            status:false,
-            message:'Email No Encontrado'
+            status: false,
+            message: 'Email No Encontrado'
         })
-        
+
     }
-    async register ({request, response}){
-        const rules = {
-            username: 'required|unique:users,username',
-            email: 'required|email|unique:users,email',
-            password: 'required',
-            role_id: 'required'
-        }
+    async register({ request, response, auth }) {
+
         const user = await request.only(User.visible)
-        
-        const validation = await validate(user, rules)
-
-        if (validation.fails()) {
-
-            return validation.messages()
-        }
 
         await User.create(user)
+
+        const token = await auth.withRefreshToken().attempt(user.email, user.password, {}, { expiresIn: '3600000' })
+
         return response.created({
-            status:true,
-            data:user
+            status: true,
+            data: user,
+            token: token
         })
     }
-    async changePassword({request, response, params}){
-        const validateEmail = await User.find(params.id)
+    async changePassword1({ request, response, auth }) {
 
-        if(validateEmail){
+        const { email, password } = request.only(User.visible)
+
+        const validateEmail = await User.findBy('email', email)
+
+        if (validateEmail) {
+
+            validateEmail.password = password
+
+            validateEmail.save()
+
             return response.ok({
-                status:true,
-                message:'Prueba Correcta'
+                status: true,
+                data: validateEmail
             })
         }
-        return response.basRequest({
-            status:false,
-            message:'Prueba Fallida'
+        return response.badRequest({
+            status: false,
+            data: 'Email not Found'
         })
     }
+    async changePassword2({ request, response, auth }) {
 
-    async logout({auth, response}){
-        await auth.logout()
+        const user = auth.user
+
+        const { password } = await request.only(User.visible)
+
+        user.password = password
+
+        user.save()
+
         return response.ok({
-            status:true,
-            message:'Sesion Cerrada'
+            status: true,
+            data: user
         })
+    }
+    async logout({ request, auth, response }) {
+        // await auth.logout()
+        // return response.ok({
+        //     status:true,
+        //     message:'Sesion Cerrada'
+        // })
+        await auth.check();
+        await auth.revokeTokens([request.input('refresh_token')], true);
+    }
+    async getUser({ request, auth, response }) {
+        try {
+            const user = await auth.getUser();
+            return response.ok({
+                status: true,
+                data: user
+            })
+        } catch (error) {
+            return response.badRequest({
+                status: false,
+                message: error
+            })
+        }
+    }
+    async session({ auth, request, response }) {
+        try {
+            const refreshToken = request.input('refresh_token')
+            const token = await auth.generateForRefreshToken(refreshToken, true)
+            console.log('refreshToken', token.refreshToken)
+            return token
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 }
 

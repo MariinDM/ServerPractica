@@ -5,7 +5,7 @@ const Schema = use('Schema')
 
 class RolviewSchema extends Schema {
   up () {
-    this.create('rolviews', (table) => {
+    this.create('rol_views', (table) => {
       table.increments()
       table.integer('rol_id',25).unsigned().references('id').inTable('rols')
       table.integer('view_id',25).unsigned().references('id').inTable('views')
@@ -14,7 +14,7 @@ class RolviewSchema extends Schema {
   }
 
   down () {
-    this.drop('rolviews')
+    this.drop('rol_views')
   }
 }
 

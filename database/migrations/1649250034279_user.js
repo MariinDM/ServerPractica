@@ -11,7 +11,7 @@ class UserSchema extends Schema {
       table.string('email', 254).notNullable().unique()
       table.string('password', 60).notNullable()
       table.boolean('status').defaultTo(true)
-      table.integer('role_id',25).unsigned().references('id').inTable('rols')
+      table.integer('role_id').unsigned().references('id').inTable('rols')
       table.timestamps()
     })
   }

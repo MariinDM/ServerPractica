@@ -17,8 +17,11 @@
 const Route = use('Route')
 
 Route.group(function(){
-    Route.post('register','AuthController.register')
+    Route.post('register','AuthController.register').validator('Auth/StoreAuth')
     Route.post('login','AuthController.login')
-    Route.post('logout','AuthController.logout')
-    Route.post('change/password/:id','AuthController.changePassword')
+    Route.get('get/user', 'AuthController.getUser').middleware(['auth'])
+    Route.post('logout','AuthController.logout').middleware(['auth'])
+    Route.post('sesion', 'AuthController.session')
+    Route.post('change2/password','AuthController.changePassword2').middleware(['auth'])
+    Route.post('change1/password','AuthController.changePassword1')
 }).prefix('api/v1/user')
